@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design — CRYPTOCAST</title>
+<meta name="description" content="The CRYPTOCAST design system: four colors, one typeface, a 4:3 stage, and the rules that keep it a broadcast rather than a dashboard.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles/docs.css">
+</head>
+<body>
+<header class="doc-head">
+  <div class="wrap">
+    <a class="doc-brand" href="index.html">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#brand"/></svg>
+      <b>CRYPTO<span>CAST</span></b>
+    </a>
+    <nav class="doc-nav">
+      <a href="index.html">Broadcast</a>
+      <a href="about.html">About</a>
+      <a href="data.html">Data</a>
+      <a href="infra.html">Infra</a>
+      <a href="design.html" aria-current="page">Design</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">Design · system</p>
+  <h1>Four colors, <i>two type sizes</i>.</h1>
+  <p class="lede">
+    The reference is a 1990s cable weather segment: purple field, orange header
+    gradient, navy data panel, yellow captions, black keylines. CRYPTOCAST keeps
+    that system and adds exactly one thing — a semantic up/down pair. Nothing
+    else. The constraint is the design.
+  </p>
+
+  <h2>Palette</h2>
+  <div class="swatches">
+    <div class="swatch"><div style="background:#332370"></div><p><b>PURPLE</b>#332370<br>field, header bottom</p></div>
+    <div class="swatch"><div style="background:#354e84"></div><p><b>BLUE</b>#354E84<br>data panels, ticker</p></div>
+    <div class="swatch"><div style="background:#e28144"></div><p><b>ORANGE</b>#E28144<br>header top, gradient stop</p></div>
+    <div class="swatch"><div style="background:#ffff6f"></div><p><b>YELLOW</b>#FFFF6F<br>captions, headings, key data</p></div>
+    <div class="swatch"><div style="background:#7dff8a"></div><p><b>UP</b>#7DFF8A<br>positive change only</p></div>
+    <div class="swatch"><div style="background:#ff8f8f"></div><p><b>DOWN</b>#FF8F8F<br>negative change only</p></div>
+    <div class="swatch"><div style="background:#8fd0ff"></div><p><b>CYAN</b>#8FD0FF<br>secondary labels, ranks</p></div>
+    <div class="swatch"><div style="background:#000000;border:1px solid #333"></div><p><b>INK</b>#000000<br>keylines, shadows, strokes</p></div>
+  </div>
+  <p>
+    Green and red are the only additions, and they are muted by broadcast
+    standards — not exchange green. They never appear as fills, only as text
+    and sparkline strokes, so the board does not turn into a traffic light.
+    Cyan is a label color, never a data color.
+  </p>
+
+  <h2>Type</h2>
+  <table>
+    <thead><tr><th>Role</th><th>Font</th><th>Stretch</th><th>Size</th></tr></thead>
+    <tbody>
+      <tr><td>Screen title, headings</td><td>Martian Mono</td><td>75%</td><td>1.18 em, 500</td></tr>
+      <tr><td>Hero price</td><td>Martian Mono</td><td>75%</td><td>2.15 em, 300</td></tr>
+      <tr><td>Data values</td><td>Martian Mono</td><td>75%</td><td>0.72 em, 700, tabular</td></tr>
+      <tr><td>Labels</td><td>Martian Mono</td><td>75%</td><td>0.72 em, 400</td></tr>
+      <tr><td>Ticker</td><td>Martian Mono</td><td>75%</td><td>1.05 cqw, uppercase</td></tr>
+      <tr><td>Metadata</td><td>Martian Mono</td><td>112.5%</td><td>0.58 em, 600</td></tr>
+    </tbody>
+  </table>
+  <p>
+    One family, variable in weight and width. Condensed for density, the wider
+    cut only for the small uppercase metadata, exactly as the reference does it.
+    All figures are <code>font-variant-numeric: tabular-nums</code>; without that
+    the board twitches every time a digit changes, which reads as a glitch.
+  </p>
+  <p>
+    Headings carry a half-pixel black stroke (<code>-webkit-text-stroke</code>)
+    plus a hard offset shadow. That is what makes yellow on navy legible at
+    distance without resorting to a heavier weight.
+  </p>
+
+  <h2>Geometry</h2>
+  <ul>
+    <li><b>Stage:</b> 4:3, letterboxed on black, scaled with <code>min(100vw, 133.333dvh)</code>.</li>
+    <li><b>Rows:</b> 18.75% masthead / 1fr body / 16.6667% ticker — the proportions of the original.</li>
+    <li><b>Panel inset:</b> the data panel floats inside a gradient body with an inner white glow, so it reads as a lit screen behind glass.</li>
+    <li><b>Keylines:</b> 1 px black on every panel join; forecast cards use a 0.16 em white border with an inset black border, the classic double-rule.</li>
+    <li><b>Radii:</b> zero, except the start-screen button. Nothing in the broadcast is rounded.</li>
+  </ul>
+
+  <h2>Icons</h2>
+  <p>
+    All glyphs are original SVG on a 48×48 grid, 2.5 px black strokes, flat
+    fills, and a single hard drop shadow. They are chunky because they were
+    designed to survive NTSC composite video: thin lines would smear into the
+    background. The sun/moon split, cloud silhouette, and rain marks are
+    conventions of the form, drawn from scratch rather than traced.
+  </p>
+
+  <h2>Motion</h2>
+  <table>
+    <thead><tr><th>Moment</th><th>Technique</th><th>Duration</th></tr></thead>
+    <tbody>
+      <tr><td>TV turn-on</td><td>ScaleY from 0.004, brightness 12 → 1, horizontal bloom</td><td>620 ms</td></tr>
+      <tr><td>Screen change</td><td>Wipe via <code>clip-path: inset(0 100% 0 0)</code>, stepped 12 frames</td><td>460 ms</td></tr>
+      <tr><td>Ticker</td><td>Linear marquee, duration derived from string length</td><td>24–60 s</td></tr>
+      <tr><td>Flicker</td><td>Three-frame opacity jitter, 7.3 s cycle, 4% of the time</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The wipe is stepped, not eased. Continuous easing reads as modern UI;
+    broadcast hardware had a frame budget and the stepper is the tell. The
+    turn-on animation is the one place a curve is allowed, because CRT
+    phosphor response is continuous.
+  </p>
+
+  <h2>Motion accessibility</h2>
+  <p>
+    <code>prefers-reduced-motion: reduce</code> kills the turn-on transform,
+    the wipes, the marquee, the flicker and the cloud drift. Data updates
+    continue. The one animation that survives is the ticker's static content —
+    without scroll it becomes a single readable line, so the information is
+    never lost to the preference.
+  </p>
+
+  <h2>Layout rules</h2>
+  <ol>
+    <li><b>No scrolling.</b> A broadcast cannot scroll. If content does not fit, it is cut or the type gets smaller — never a scrollbar.</li>
+    <li><b>One number per row.</b> Labels left, values right, always on the same baseline. No centered data tables.</li>
+    <li><b>Yellow means "look here."</b> At most three yellow elements per screen. If everything is captioned, nothing is.</li>
+    <li><b>Color is never the only signal.</b> Change carries a sign (<code>+</code>/<code>−</code>) and an arrow in the ticker, so the up/down pair is redundant.</li>
+    <li><b>Every panel has an edge.</b> No floating cards on a gradient. The physicality is the point.</li>
+    <li><b>Density over whitespace.</b> Twelve assets on one screen at 0.68 em beats four assets at 1.2 em. This is the entire thesis.</li>
+  </ol>
+
+  <h2>Contrast</h2>
+  <p>
+    White on <code>#354e84</code> is 7.4:1; yellow on <code>#354e84</code> is
+    8.9:1. Both exceed WCAG AA for body text and AAA for large text. The up/down
+    pair was darkened from the obvious neon to <code>#7DFF8A</code> /
+    <code>#FF8F8F</code> so it clears 4.5:1 on the navy panel while still
+    reading as "bright" on a CRT. Focus rings are 2 px yellow with a 2 px
+    offset, visible on every background in the system.
+  </p>
+</main>
+
+<footer class="doc-foot">
+  <div class="wrap">
+    <span>CRYPTOCAST · MIT · Not financial advice</span>
+    <span><a href="https://github.com/Dellyyty/crypto-retro">github.com/Dellyyty/crypto-retro</a></span>
+  </div>
+</footer>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="brand" viewBox="0 0 64 64">
+    <rect x="3" y="3" width="58" height="58" rx="6" fill="#332370" stroke="#000" stroke-width="3"/>
+    <path d="M32 13a19 19 0 1 0 0 38 15.5 15.5 0 1 1 0-38Z" fill="#ffd766" stroke="#000" stroke-width="2.5"/>
+    <rect x="16" y="44" width="32" height="4" rx="1" fill="#ffff6f" stroke="#000" stroke-width="1.5"/>
+  </symbol>
+</svg>
+</body>
+</html>

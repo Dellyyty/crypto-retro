@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — CRYPTOCAST</title>
+<meta name="description" content="What CRYPTOCAST is, why it exists, and the rules it plays by.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles/docs.css">
+</head>
+<body>
+<header class="doc-head">
+  <div class="wrap">
+    <a class="doc-brand" href="index.html">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#brand"/></svg>
+      <b>CRYPTO<span>CAST</span></b>
+    </a>
+    <nav class="doc-nav">
+      <a href="index.html">Broadcast</a>
+      <a href="about.html" aria-current="page">About</a>
+      <a href="data.html">Data</a>
+      <a href="infra.html">Infra</a>
+      <a href="design.html">Design</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">About · v1.0</p>
+  <h1>A market broadcast <i>from 1993</i>.</h1>
+  <p class="lede">
+    CRYPTOCAST renders live crypto market data inside the visual grammar of a
+    WeatherStar-era cable broadcast — the local forecast segment on The Weather
+    Channel before the internet ate the screen. It is a browser-only artifact:
+    no backend, no build step, no tracking, no API keys, no fabricated numbers.
+  </p>
+
+  <div class="callout">
+    <p><b>Not financial advice.</b> CRYPTOCAST reports public market data. It does
+    not produce signals, predictions, or recommendations. Numbers on screen are
+    as fresh as the upstream API and are labeled with their source on the
+    <a href="data.html">Data</a> page.</p>
+  </div>
+
+  <h2>Why this exists</h2>
+  <p>
+    Weather broadcasts from the late 1980s and early 1990s were a specific kind
+    of interface design: dense, high-contrast, information-first, and
+    unapologetically ugly by modern standards. Every pixel carried a reading.
+    Nothing was decorative except the gradient header and the icon glyphs.
+  </p>
+  <p>
+    Crypto dashboards went the other direction — glassmorphism, purple glow,
+    whitespace, and a candlestick chart per viewport. The information density
+    collapsed while the visual noise increased. CRYPTOCAST is the counterfactual:
+    what if a market terminal had been designed by the people who built
+    WeatherStar III, where a screen holds twenty numbers and you can read all of
+    them in four seconds from across a room?
+  </p>
+  <p>
+    The result is also a genuinely fast dashboard. It ships as static files,
+    boots from a cached snapshot in under one frame, and works offline after
+    first load.
+  </p>
+
+  <h2>What's on the broadcast</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>1 · Conditions</h3>
+      <p>The headline: BTC price, the market's "weather" derived from 24h change,
+      range, dominance, volume, sentiment, gas, funding, hashrate.</p>
+    </div>
+    <div class="card">
+      <h3>2 · Market Ladder</h3>
+      <p>Top twelve assets with last, 24h, 7d, and a seven-day sparkline.
+      Everything on one screen, no scrolling.</p>
+    </div>
+    <div class="card">
+      <h3>3 · Candle Range</h3>
+      <p>Daily candles for BTC/ETH/SOL from Coinbase spot, plus 1D/7D/30D
+      change cards at the bottom, laid out like the five-day forecast.</p>
+    </div>
+    <div class="card">
+      <h3>4 · Chain Telemetry</h3>
+      <p>Bitcoin block height, mempool backlog, three fee tiers, hashrate,
+      difficulty and retarget progress; Ethereum gas and base fee; perpetual
+      funding for BTC and ETH.</p>
+    </div>
+    <div class="card">
+      <h3>5 · Market Ephemeris</h3>
+      <p>Fear &amp; Greed gauge, dominance bars, and the real moon phases —
+      the one piece of the broadcast that is genuinely astronomical rather
+      than metaphorical.</p>
+    </div>
+    <div class="card">
+      <h3>6 · Discussion</h3>
+      <p>The narrative screen, written the way a local forecaster would read it:
+      short declarative sentences, no adjectives that imply a trade. Plus the
+      halving countdown, computed from the block height.</p>
+    </div>
+  </div>
+
+  <h2>Controls</h2>
+  <table>
+    <thead><tr><th>Key</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><kbd>1</kbd>–<kbd>6</kbd></td><td>Jump to a screen</td></tr>
+      <tr><td><kbd>←</kbd> / <kbd>→</kbd></td><td>Previous / next screen</td></tr>
+      <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>Switch chart asset (BTC / ETH / SOL)</td></tr>
+      <tr><td><kbd>space</kbd></td><td>Pause or resume rotation</td></tr>
+      <tr><td><kbd>m</kbd></td><td>Mute or unmute broadcast audio</td></tr>
+      <tr><td><kbd>Enter</kbd></td><td>Start the broadcast from the title card</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Every screen has a URL fragment (<code>#conditions</code>, <code>#markets</code>,
+    <code>#chart</code>, <code>#network</code>, <code>#ephemeris</code>,
+    <code>#discussion</code>). Appending <code>?direct</code> skips the title card —
+    useful for embedding: <code>index.html?direct#network</code>.
+  </p>
+
+  <h2>What it deliberately is not</h2>
+  <ul>
+    <li><b>Not real-time.</b> Markets refresh once a minute; chain data twice a
+    minute. Anything faster is a lie about what public APIs will give you for free.</li>
+    <li><b>Not an exchange view.</b> Prices come from aggregated spot data; they
+    will not match your venue's order book to the cent.</li>
+    <li><b>Not personalized.</b> No accounts, no cookies, no analytics. The only
+    storage is a local snapshot cache so the first paint is instant.</li>
+    <li><b>Not a trading tool.</b> No order entry, no alerts, no wallets.</li>
+  </ul>
+
+  <h2>Provenance</h2>
+  <p>
+    All data is public, keyless and CORS-enabled. Specific endpoints, refresh
+    cadence, and failure behavior are documented on <a href="data.html">Data</a>.
+    The design system, including why the palette is exactly four colors, is on
+    <a href="design.html">Design</a>. The deploy topology is on
+    <a href="infra.html">Infra</a>.
+  </p>
+
+  <h2>License and credits</h2>
+  <p>
+    Code: MIT. The Martian Mono typeface is licensed under the SIL Open Font
+    License 1.1 and is vendored in <code>assets/fonts/</code> with its license
+    text. All icons, the logo and the background are original SVG/CSS in this
+    repository — nothing is traced from a broadcast recording.
+  </p>
+  <p>
+    The aesthetic is a homage to the WeatherStar family of graphics systems. It
+    is not affiliated with, endorsed by, or derived from The Weather Channel's
+    source. No broadcast footage, audio, or marks are used.
+  </p>
+</main>
+
+<footer class="doc-foot">
+  <div class="wrap">
+    <span>CRYPTOCAST · MIT · Not financial advice</span>
+    <span><a href="https://github.com/Dellyyty/crypto-retro">github.com/Dellyyty/crypto-retro</a></span>
+  </div>
+</footer>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="brand" viewBox="0 0 64 64">
+    <rect x="3" y="3" width="58" height="58" rx="6" fill="#332370" stroke="#000" stroke-width="3"/>
+    <path d="M32 13a19 19 0 1 0 0 38 15.5 15.5 0 1 1 0-38Z" fill="#ffd766" stroke="#000" stroke-width="2.5"/>
+    <rect x="16" y="44" width="32" height="4" rx="1" fill="#ffff6f" stroke="#000" stroke-width="1.5"/>
+  </symbol>
+</svg>
+</body>
+</html>

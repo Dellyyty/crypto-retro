@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data — CRYPTOCAST</title>
+<meta name="description" content="Every endpoint CRYPTOCAST reads, its refresh cadence, its failure mode, and the exact fields used.">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles/docs.css">
+</head>
+<body>
+<header class="doc-head">
+  <div class="wrap">
+    <a class="doc-brand" href="index.html">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#brand"/></svg>
+      <b>CRYPTO<span>CAST</span></b>
+    </a>
+    <nav class="doc-nav">
+      <a href="index.html">Broadcast</a>
+      <a href="about.html">About</a>
+      <a href="data.html" aria-current="page">Data</a>
+      <a href="infra.html">Infra</a>
+      <a href="design.html">Design</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">Data · provenance</p>
+  <h1>Every number, <i>traced</i>.</h1>
+  <p class="lede">
+    CRYPTOCAST reads six public HTTP APIs directly from your browser. No proxy,
+    no server, no key, no database. This page lists each one, what it feeds, how
+    often it is polled, and what happens when it fails.
+  </p>
+
+  <h2>Source table</h2>
+  <table>
+    <thead>
+      <tr><th>Source</th><th>Feeds</th><th>Cadence</th><th>CORS</th><th>Failure mode</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>api.coingecko.com</code><br>/coins/markets</td>
+        <td>All prices, 24h/7d change, 24h range, market cap, 7d sparkline (top 12 assets)</td>
+        <td>60 s</td>
+        <td><span class="badge">*</span></td>
+        <td>Rows hold last snapshot; ticker omits affected segments</td>
+      </tr>
+      <tr>
+        <td><code>api.coingecko.com</code><br>/global</td>
+        <td>Total market cap, 24h volume, BTC/ETH dominance, stablecoin share</td>
+        <td>60 s</td>
+        <td><span class="badge">*</span></td>
+        <td>Dominance bars and cap read <code>—</code></td>
+      </tr>
+      <tr>
+        <td><code>api.alternative.me</code><br>/fng</td>
+        <td>Fear &amp; Greed index and classification</td>
+        <td>60 s</td>
+        <td><span class="badge">*</span></td>
+        <td>Gauge renders without needle, label reads <code>—</code></td>
+      </tr>
+      <tr>
+        <td><code>api.exchange.coinbase.com</code><br>/products/{BTC,ETH,SOL}-USD/candles</td>
+        <td>Daily OHLCV, 350 sessions per asset</td>
+        <td>5 min</td>
+        <td><span class="badge">*</span></td>
+        <td>Chart shows <code>NO SIGNAL</code>; forecast cards hide</td>
+      </tr>
+      <tr>
+        <td><code>mempool.space</code><br>/api/mempool · /v1/fees/recommended<br>/v1/blocks · /v1/mining/hashrate/3d<br>/v1/difficulty-adjustment</td>
+        <td>Block height, recent blocks, mempool count and vsize, fee tiers, hashrate, difficulty, retarget progress</td>
+        <td>60 s</td>
+        <td><span class="badge">*</span></td>
+        <td>Chain screen degrades per-field, never all-or-nothing</td>
+      </tr>
+      <tr>
+        <td><code>eth.drpc.org</code><br>JSON-RPC (batched)</td>
+        <td>Gas price, base fee, block number, gas used ratio</td>
+        <td>60 s</td>
+        <td><span class="badge">*</span></td>
+        <td>ETH column reads <code>—</code>; BTC side unaffected</td>
+      </tr>
+      <tr>
+        <td><code>api.hyperliquid.xyz</code><br>/info · metaAndAssetCtxs</td>
+        <td>Perpetual funding rate for BTC and ETH</td>
+        <td>60 s</td>
+        <td><span class="badge">*</span></td>
+        <td>Funding rows read <code>—</code></td>
+      </tr>
+      <tr>
+        <td>Computed locally</td>
+        <td>Moon phase (synodic month from a known new moon), halving countdown (210,000-block interval), issuance percent, ticker rotation</td>
+        <td>on render</td>
+        <td>—</td>
+        <td>Cannot fail; pure functions, unit-tested</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <p><b>Keyless by design.</b> Every endpoint above served
+    <code>access-control-allow-origin: *</code> when verified on 2026-11-07.
+    Nothing in this repo holds a credential. If a provider adds a key
+    requirement, that panel degrades to <code>—</code> rather than silently
+    showing stale values.</p>
+  </div>
+
+  <h2>Polling model</h2>
+  <p>
+    Two timers, both paused when the tab is hidden by the browser's own
+    throttling and by <code>visibilitychange</code> for audio. Market and chain
+    data share one 60-second sweep; candles use a slower 5-minute sweep because
+    daily OHLCV does not change meaningfully inside a minute and Coinbase
+    rate-limits per IP.
+  </p>
+<pre><code>t=0     loadAll()      markets, global, F&amp;G, chain, eth, funding  (6 requests, parallel)
+t=0     loadCandles()  3 candle requests, parallel
+t=60s   loadAll()
+t=300s  loadCandles()
+t=600s  loadAll()
+…</code></pre>
+
+  <h3>Boot behavior</h3>
+  <ol>
+    <li>Read <code>localStorage["cryptocast.cache.v1"]</code> and render immediately. First paint shows the last snapshot, not skeletons.</li>
+    <li>Fire the network sweep in parallel with the TV turn-on animation.</li>
+    <li>Overwrite rendered values as each response lands. No layout shift: every field is fixed-width and tabular.</li>
+    <li>Persist the merged snapshot after each sweep.</li>
+  </ol>
+
+  <h2>Number formatting contract</h2>
+  <table>
+    <thead><tr><th>Value</th><th>Rule</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td>Price ≥ $1,000</td><td>0 decimals, grouping</td><td><code>$75,681</code></td></tr>
+      <tr><td>Price $1 – $999</td><td>2 decimals</td><td><code>$89.43</code></td></tr>
+      <tr><td>Price &lt; $0.01</td><td>4 → 6 decimals</td><td><code>$0.002841</code></td></tr>
+      <tr><td>Change</td><td>Always signed, 2 dp</td><td><code>+0.33%</code></td></tr>
+      <tr><td>Funding</td><td>4 dp, per 8 h</td><td><code>0.0013% / 8h</code></td></tr>
+      <tr><td>Cap / volume</td><td>Compact, 2 dp</td><td><code>$2.56T</code></td></tr>
+      <tr><td>Hashrate</td><td>SI, 2 dp</td><td><code>1007.39 EH/s</code></td></tr>
+      <tr><td>Unknown</td><td>Em dash, never <code>0</code> or <code>NaN</code></td><td><code>—</code></td></tr>
+    </tbody>
+  </table>
+  <p>
+    <code>—</code> is load-bearing. A zero is a claim; an em dash is an absence.
+    No formatter ever returns a fabricated default.
+  </p>
+
+  <h2>Rate limits and etiquette</h2>
+  <ul>
+    <li>CoinGecko free tier: roughly 10–30 calls/minute per IP. CRYPTOCAST uses 2 per minute.</li>
+    <li>mempool.space: generous, but five requests per minute is well inside courtesy bounds.</li>
+    <li>Coinbase Exchange: 10 requests/second per IP; CRYPTOCAST uses 3 per 5 minutes.</li>
+    <li>No user-agent spoofing, no scraping of HTML, no retries with backoff storms — a failed sweep is skipped, not hammered.</li>
+  </ul>
+
+  <h2>Derived values</h2>
+  <h3>Weather condition</h3>
+  <p>24h percentage change maps to a glyph on a fixed ladder. It is a display device, not a model.</p>
+  <table>
+    <thead><tr><th>24h change</th><th>Condition</th><th>Icon</th></tr></thead>
+    <tbody>
+      <tr><td>≥ +5%</td><td>Sunny</td><td>Sun</td></tr>
+      <tr><td>+1% to +5%</td><td>Fair</td><td>Sun over horizon</td></tr>
+      <tr><td>−1% to +1%</td><td>P Cloudy</td><td>Sun behind cloud</td></tr>
+      <tr><td>−4% to −1%</td><td>Cloudy</td><td>Overcast</td></tr>
+      <tr><td>−8% to −4%</td><td>Showers</td><td>Cloud + rain</td></tr>
+      <tr><td>&lt; −8%</td><td>Storms</td><td>Cloud + bolt</td></tr>
+      <tr><td>unknown</td><td>Haze</td><td>Horizontal bands</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Moon phase</h3>
+  <p>
+    Age = <code>((now − 2000-01-06T18:14Z) mod 29.530588853 days)</code>. Phase
+    names use the four principal quarters with crescent/gibbous interludes,
+    matching the four-phase card the reference broadcast shows.
+  </p>
+
+  <h3>Halving countdown</h3>
+  <p>
+    Target = <code>(floor(height / 210000) + 1) × 210000</code>. ETA assumes
+    10-minute blocks. Subsidy = <code>50 / 2^(era−1)</code>. Issuance percent
+    sums completed eras plus the partial era, against the 21,000,000 cap —
+    which is why the figure never quite reaches 100%.
+  </p>
+
+  <h2>Precision limits you should know</h2>
+  <ul>
+    <li>CoinGecko aggregates across venues, so BTC price can differ from Coinbase by tens of dollars.</li>
+    <li>Candles are Coinbase USD spot only — a single venue, not a composite index.</li>
+    <li>Funding is Hyperliquid's hourly rate normalized to 8 h; other venues quote differently.</li>
+    <li>Difficulty retarget progress is based on the node's estimate, not a protocol guarantee.</li>
+    <li>Moon phase is an approximation good to a few hours; it is decoration with real math behind it.</li>
+  </ul>
+</main>
+
+<footer class="doc-foot">
+  <div class="wrap">
+    <span>CRYPTOCAST · MIT · Not financial advice</span>
+    <span><a href="https://github.com/Dellyyty/crypto-retro">github.com/Dellyyty/crypto-retro</a></span>
+  </div>
+</footer>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="brand" viewBox="0 0 64 64">
+    <rect x="3" y="3" width="58" height="58" rx="6" fill="#332370" stroke="#000" stroke-width="3"/>
+    <path d="M32 13a19 19 0 1 0 0 38 15.5 15.5 0 1 1 0-38Z" fill="#ffd766" stroke="#000" stroke-width="2.5"/>
+    <rect x="16" y="44" width="32" height="4" rx="1" fill="#ffff6f" stroke="#000" stroke-width="1.5"/>
+  </symbol>
+</svg>
+</body>
+</html>
