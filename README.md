@@ -34,8 +34,18 @@ cached snapshot in one frame, works after first load with no network.
 
 ## Deploy
 
-Pages serves `main` → `/docs` directly. No build, no artifact upload, and no
-Actions token scope required — push and the site is live in about a minute.
+`docs/` is a complete static site. Point any static host at it — there is no
+build command and no output directory to configure beyond that one folder.
+
+| Host | Setup |
+|---|---|
+| **GitHub Pages** | Settings → Pages → branch `main`, folder `/docs`. Already configured here; `dellyty.github.io/crypto-retro/` is the canonical URL. |
+| **Netlify** | `netlify.toml` is committed — `netlify deploy --prod`, or drag `docs/` onto app.netlify.com/drop |
+| **Vercel** | `vercel.json` is committed — `vercel --prod` |
+| **Cloudflare Pages** | Build command empty, output directory `docs` |
+| **Anything else** | `npx serve docs`, `python3 -m http.server -d docs`, nginx root → `docs/` |
+
+`docs/.nojekyll` is committed so Pages serves the folder verbatim.
 
 Optional CI: `ci/checks.yml` runs the tests, the invariant checker and a boot
 smoke test on every push. Enable it with:
@@ -182,3 +192,18 @@ traced from a broadcast recording. The aesthetic is a homage to WeatherStar-era
 graphics hardware; this project is not affiliated with The Weather Channel.
 
 MIT © Dellyyty
+
+### If the Pages URL 404s
+
+`dellyty.github.io` returned "Site not found" for every repo on this account,
+including a three-line probe repo whose build reported `status: built`. That is
+an account-level Pages restriction, not a site problem — verify the account
+email, then re-run:
+
+```bash
+gh api -X DELETE  repos/Dellyyty/crypto-retro/pages
+gh api -X POST    repos/Dellyyty/crypto-retro/pages \
+  -f source[branch]=main -f source[path]=/docs
+```
+
+Until then use any host in the table above; the files are identical.
