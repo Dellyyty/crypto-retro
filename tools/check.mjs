@@ -10,6 +10,8 @@
  */
 
 import { readdir, readFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -138,6 +140,18 @@ for (const file of htmlFiles) {
     const opens = (text.match(new RegExp(`<${tag}[\\s>]`, "g")) ?? []).length;
     const closes = (text.match(new RegExp(`</${tag}>`, "g")) ?? []).length;
     if (opens !== closes) failures.push(`${file}: <${tag}> ${opens} open vs ${closes} close`);
+  }
+}
+
+// 8 ---- every module parses ---------------------------------------------
+// A syntax error in a module is invisible to every other check here and only
+// shows up as a blank screen in the browser. Parse each one in-process.
+const run = promisify(execFile);
+for (const file of files.filter((f) => extname(f) === ".js" || extname(f) === ".mjs")) {
+  try {
+    await run(process.execPath, ["--check", file]);
+  } catch (err) {
+    failures.push(`${file}: ${(err.stderr ?? err.message).split("\n")[0]}`);
   }
 }
 

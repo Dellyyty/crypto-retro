@@ -167,8 +167,8 @@ export function drawGauge(canvas, value) {
   if (!box) return;
   const { ctx, w, h } = box;
   const cx = w / 2;
-  const cy = h * 0.88;
-  const r = Math.min(w * 0.42, h * 0.86);
+  const cy = h * 0.92;
+  const r = Math.min(w * 0.44, h * 0.82);
   const bands = [
     [0, 25, "#ff8f8f"],
     [25, 45, "#e28144"],

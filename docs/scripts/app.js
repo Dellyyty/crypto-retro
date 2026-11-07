@@ -396,22 +396,26 @@ function renderNetwork() {
       $("retargetMeta").textContent = `${chain.retarget.remainingBlocks} blocks · ${sign}${chain.retarget.change.toFixed(2)}%`;
     }
     const strip = $("blockStrip");
-    // Portrait panels have vertical room for the full recent-block list; the
-    // landscape panel only fits three rows. Choose at render time.
-    const rows = window.matchMedia("(max-width: 760px) and (orientation: portrait)").matches ? 8 : 3;
-    strip.replaceChildren(
-      ...(chain.chain ?? []).slice(0, rows).map((b) => {
-        const li = document.createElement("li");
-        const h = document.createElement("b");
-        h.textContent = num(b.height);
-        const tx = document.createElement("span");
-        tx.textContent = `${num(b.tx_count)} tx`;
-        const age = document.createElement("span");
-        age.textContent = duration(Date.now() - b.timestamp * 1000);
-        li.append(h, tx, age);
-        return li;
-      }),
-    );
+    // How many recent blocks fit is a function of the panel, not the viewport:
+    // measure the track and add rows while they still fit.
+    const all = (chain.chain ?? []).slice(0, 8);
+    strip.replaceChildren();
+    for (const b of all) {
+      const li = document.createElement("li");
+      const h = document.createElement("b");
+      h.textContent = num(b.height);
+      const tx = document.createElement("span");
+      tx.textContent = `${num(b.tx_count)} tx`;
+      const age = document.createElement("span");
+      age.textContent = duration(Date.now() - b.timestamp * 1000);
+      li.append(h, tx, age);
+      strip.append(li);
+      // Keep the row only if the list still fits its track.
+      if (strip.scrollHeight > strip.clientHeight + 1) {
+        li.remove();
+        break;
+      }
+    }
   }
   const eth = state.eth;
   if (eth) {
