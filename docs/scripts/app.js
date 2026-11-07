@@ -205,6 +205,7 @@ function showScreen(name, { announce = true } = {}) {
   if (name === "ephemeris") requestAnimationFrame(renderGauge);
   if (name === "markets") requestAnimationFrame(renderMarkets);
   if (name === "discussion") requestAnimationFrame(() => fitCopy($("narrative")));
+  if (name === "network") requestAnimationFrame(renderBlockStrip);
 }
 
 function cycle() {
@@ -379,6 +380,35 @@ function renderForecastCards() {
   paintWithin(wrap);
 }
 
+
+/**
+ * Fill the recent-block list with as many rows as its track holds.
+ *
+ * Must run while the screen is visible: a hidden panel reports 0 height for
+ * every element, so a fit check there would append the whole list and clip it.
+ */
+function renderBlockStrip() {
+  const strip = $("blockStrip");
+  const blocks = state.chain?.chain ?? [];
+  if (!strip || !blocks.length) return;
+  strip.replaceChildren();
+  for (const b of blocks.slice(0, 8)) {
+    const li = document.createElement("li");
+    const h = document.createElement("b");
+    h.textContent = num(b.height);
+    const tx = document.createElement("span");
+    tx.textContent = `${num(b.tx_count)} tx`;
+    const age = document.createElement("span");
+    age.textContent = duration(Date.now() - b.timestamp * 1000);
+    li.append(h, tx, age);
+    strip.append(li);
+    if (strip.scrollHeight > strip.clientHeight + 1) {
+      li.remove();
+      break;
+    }
+  }
+}
+
 function renderNetwork() {
   const chain = state.chain;
   if (chain) {
@@ -395,27 +425,6 @@ function renderNetwork() {
       const sign = chain.retarget.change >= 0 ? "+" : "";
       $("retargetMeta").textContent = `${chain.retarget.remainingBlocks} blocks · ${sign}${chain.retarget.change.toFixed(2)}%`;
     }
-    const strip = $("blockStrip");
-    // How many recent blocks fit is a function of the panel, not the viewport:
-    // measure the track and add rows while they still fit.
-    const all = (chain.chain ?? []).slice(0, 8);
-    strip.replaceChildren();
-    for (const b of all) {
-      const li = document.createElement("li");
-      const h = document.createElement("b");
-      h.textContent = num(b.height);
-      const tx = document.createElement("span");
-      tx.textContent = `${num(b.tx_count)} tx`;
-      const age = document.createElement("span");
-      age.textContent = duration(Date.now() - b.timestamp * 1000);
-      li.append(h, tx, age);
-      strip.append(li);
-      // Keep the row only if the list still fits its track.
-      if (strip.scrollHeight > strip.clientHeight + 1) {
-        li.remove();
-        break;
-      }
-    }
   }
   const eth = state.eth;
   if (eth) {
@@ -426,6 +435,7 @@ function renderNetwork() {
   const f = state.funding;
   $("fundingBtc").textContent = f?.BTC != null ? `${(f.BTC * 100).toFixed(4)}% / 8h` : "—";
   $("fundingEth").textContent = f?.ETH != null ? `${(f.ETH * 100).toFixed(4)}% / 8h` : "—";
+  renderBlockStrip();
 }
 
 function renderGauge() {
@@ -691,6 +701,7 @@ function init() {
 
   window.addEventListener("resize", () => {
     if (state.screen === "discussion") fitCopy($("narrative"));
+    if (state.screen === "network") renderBlockStrip();
     if (state.screen === "chart") renderChart();
     if (state.screen === "ephemeris") renderGauge();
     if (state.screen === "markets") renderMarkets();
