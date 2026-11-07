@@ -8,11 +8,11 @@ import assert from "node:assert/strict";
 
 import {
   isNum, usd, usdCompact, pct, share, num, gwei, hashrate, bytes, duration, arrowPct, clockUTC, shortDate,
-} from "../site/scripts/lib/format.js";
-import { conditionFor, conditionShort, trend } from "../site/scripts/lib/conditions.js";
+} from "../docs/scripts/lib/format.js";
+import { conditionFor, conditionShort, trend } from "../docs/scripts/lib/conditions.js";
 import {
   moonAge, moonPhase, upcomingPhases, nextHalving, eraIssuedPct, narrativeFor, HALVING_INTERVAL,
-} from "../site/scripts/lib/astro.js";
+} from "../docs/scripts/lib/astro.js";
 
 // ------------------------------------------------------------------ format
 

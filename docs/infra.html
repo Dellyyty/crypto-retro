@@ -31,7 +31,7 @@
   <p class="lede">
     The site is plain HTML, CSS and ES modules. There is no bundler, no
     node_modules in the runtime path, no server. GitHub Pages serves
-    <code>site/</code> verbatim. Everything else in the repo exists to verify,
+    <code>docs/</code> verbatim. Everything else in the repo exists to verify,
     document, or ship that directory.
   </p>
 
@@ -48,7 +48,7 @@
         <!-- pages -->
         <rect x="290" y="30" width="200" height="90" fill="#354e84" stroke="#ffffff" stroke-width="2"/>
         <text x="390" y="60" text-anchor="middle" font-size="13">GITHUB PAGES</text>
-        <text x="390" y="80" text-anchor="middle" fill="#8fd0ff" font-size="10">site/ (commit → deploy)</text>
+        <text x="390" y="80" text-anchor="middle" fill="#8fd0ff" font-size="10">docs/ (commit → deploy)</text>
         <text x="390" y="96" text-anchor="middle" fill="#8fd0ff" font-size="10">HTML · CSS · JS · SVG · woff2</text>
 
         <!-- apis -->
@@ -87,7 +87,7 @@
 
   <h2>Repository layout</h2>
 <pre><code>crypto-retro/
-├── site/                 ← deployed verbatim; no build step
+├── docs/                 ← deployed verbatim; no build step
 │   ├── index.html        broadcast shell + SVG sprite
 │   ├── about.html        what/why
 │   ├── data.html         endpoint provenance + formatting contract
@@ -192,13 +192,13 @@ npm run check   # repo invariants: no TODOs, asset refs resolve, no keys
 npm start       # http://localhost:8080 with correct MIME types</code></pre>
   <p>
     CI runs <code>test</code> and <code>check</code> on every push, then deploys
-    <code>site/</code> to Pages only if both pass. There is no staging tier: a
+    <code>docs/</code> to Pages only if both pass. There is no staging tier: a
     broken commit simply fails before deploy.
   </p>
 
   <h2>Cost and limits</h2>
   <ul>
-    <li>Hosting: GitHub Pages, free for public repos, HTTPS, global CDN.</li>
+    <li>Hosting: GitHub Pages serving <code>main</code> → <code>/docs</code>, free for public repos, HTTPS, global CDN. No Actions permission is needed to deploy.</li>
     <li>Bandwidth: ~110 KB first load, ~1 KB per minute thereafter (JSON only).</li>
     <li>Upstream: all keyless free tiers, chosen so the project survives a fork with zero configuration.</li>
     <li>There is no server to page anyone about.</li>

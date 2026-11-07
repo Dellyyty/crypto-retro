@@ -14,7 +14,7 @@ import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const SITE = join(ROOT, "site");
+const SITE = join(ROOT, "docs");
 const failures = [];
 
 async function walk(dir) {

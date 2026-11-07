@@ -26,14 +26,28 @@ cached snapshot in one frame, works after first load with no network.
 | **Screens** | Conditions · Market Ladder · Candle Range · Chain Telemetry · Market Ephemeris · Discussion |
 | **Data** | CoinGecko, Coinbase Exchange, mempool.space, drpc (ETH JSON-RPC), Hyperliquid, alternative.me |
 | **Dependencies** | none at runtime |
-| **Build** | none — `site/` is deployed verbatim |
-| **Hosting** | GitHub Pages |
+| **Build** | none — `docs/` is deployed verbatim |
+| **Hosting** | GitHub Pages, `main` → `/docs` |
 | **Keys / accounts** | none |
+
+## Deploy
+
+Pages serves `main` → `/docs` directly. No build, no artifact upload, and no
+Actions token scope required — push and the site is live in about a minute.
+
+Optional CI: `ci/checks.yml` runs the tests, the invariant checker and a boot
+smoke test on every push. Enable it with:
+
+```bash
+mkdir -p .github/workflows && cp ci/checks.yml .github/workflows/
+```
+
+Then commit and push with a token that has the `workflow` scope.
 
 ## Run it
 
 ```bash
-git clone https://github.com/Dellyty/crypto-retro
+git clone https://github.com/Dellyyty/crypto-retro
 cd crypto-retro
 npm start          # → http://localhost:8080
 ```
@@ -87,7 +101,7 @@ it, plus a halving countdown computed from the block height.
 ## Architecture
 
 ```
-site/                      deployed verbatim — no build step
+docs/                      deployed verbatim — no build step
 ├── index.html             broadcast shell + SVG sprite
 ├── about.html             what/why
 ├── data.html              endpoint provenance, formatting contract
@@ -107,8 +121,8 @@ site/                      deployed verbatim — no build step
 │       └── audio.js       Web Audio ambience + cues
 └── assets/                font (+ OFL), icons, og.png, manifest, sw.js
 tests/pure.test.mjs        26 tests over the pure modules
-tools/                     serve.mjs · check.mjs · og.mjs
-.github/workflows/         checks + Pages deploy
+tools/                     serve.mjs · check.mjs · og.mjs · 404.mjs
+ci/checks.yml              CI definition (install with one command, see below)
 ```
 
 Decisions worth knowing:
@@ -153,7 +167,7 @@ tracking. The only storage is a local snapshot cache.
 
 ## Credits
 
-Martian Mono by Evil Martians, SIL Open Font License 1.1 (`site/assets/fonts/OFL.txt`).
+Martian Mono by Evil Martians, SIL Open Font License 1.1 (`docs/assets/fonts/OFL.txt`).
 All icons, the logo and backgrounds are original SVG/CSS in this repo — nothing is
 traced from a broadcast recording. The aesthetic is a homage to WeatherStar-era
 graphics hardware; this project is not affiliated with The Weather Channel.

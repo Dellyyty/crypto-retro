@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Rasterize site/assets/img/og.svg → og.png (1200x630) and app icons.
+ * Rasterize docs/assets/img/og.svg → og.png (1200x630) and app icons.
  * Requires rsvg-convert (brew install librsvg) or ImageMagick.
  */
 
@@ -11,7 +11,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const run = promisify(execFile);
-const IMG = resolve(fileURLToPath(new URL("../site/assets/img", import.meta.url)));
+const IMG = resolve(fileURLToPath(new URL("../docs/assets/img", import.meta.url)));
 
 async function have(bin) {
   try {

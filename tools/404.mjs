@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generate site/404.html from the app shell.
+ * Generate docs/404.html from the app shell.
  *
  * GitHub Pages serves 404.html for unknown paths. Deep links of the form
  * /crypto-retro/#network already land on index.html (the fragment is
@@ -11,7 +11,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
-const SITE = fileURLToPath(new URL("../site/", import.meta.url));
+const SITE = fileURLToPath(new URL("../docs/", import.meta.url));
 
 const shell = await readFile(new URL("./index.html", `file://${SITE}`), "utf8");
 
@@ -34,4 +34,4 @@ const fallback = shell
   .replace(/<title>[^<]*<\/title>/, "<title>CRYPTOCAST — channel not found</title>");
 
 await writeFile(new URL("./404.html", `file://${SITE}`), fallback);
-console.log("✓ wrote site/404.html");
+console.log("✓ wrote docs/404.html");

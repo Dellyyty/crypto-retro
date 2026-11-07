@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Zero-dependency static server for site/.
+ * Zero-dependency static server for docs/.
  * Correct MIME types for ES modules, woff2, webmanifest and svg.
  */
 
@@ -9,7 +9,7 @@ import { readFile, stat } from "node:fs/promises";
 import { extname, join, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const ROOT = resolve(fileURLToPath(new URL("../site", import.meta.url)));
+const ROOT = resolve(fileURLToPath(new URL("../docs", import.meta.url)));
 const PORT = Number(process.env.PORT ?? 8080);
 
 const TYPES = {
