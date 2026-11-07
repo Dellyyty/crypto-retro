@@ -44,7 +44,7 @@ export function drawCandles(canvas, candles) {
   const { ctx, w, h } = box;
   if (!Array.isArray(candles) || candles.length < 2) {
     ctx.fillStyle = PALETTE.faint;
-    ctx.font = "600 13px 'Martian Mono', monospace";
+    ctx.font = `600 ${Math.max(10, Math.min(16, Math.round(w / 40)))}px 'Martian Mono', monospace`;
     ctx.textAlign = "center";
     ctx.fillText("NO SIGNAL", w / 2, h / 2);
     return;
@@ -78,7 +78,8 @@ export function drawCandles(canvas, candles) {
   // grid
   ctx.strokeStyle = PALETTE.grid;
   ctx.lineWidth = 1;
-  ctx.font = "500 9px 'Martian Mono', monospace";
+  const tickFont = Math.max(8, Math.min(12, Math.round(w / 78)));
+  ctx.font = `500 ${tickFont}px 'Martian Mono', monospace`;
   ctx.fillStyle = PALETTE.faint;
   ctx.textAlign = "right";
   ctx.textBaseline = "middle";

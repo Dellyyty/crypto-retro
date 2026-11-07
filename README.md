@@ -9,6 +9,8 @@ cable-box audio. Real data. No build step. No backend.
 
 **[dellyty.github.io/crypto-retro](https://dellyty.github.io/crypto-retro/)**
 
+![Current Conditions](screenshots/conditions.jpg)
+
 ---
 
 ## What it is
@@ -77,6 +79,13 @@ Deep links: `#conditions`, `#markets`, `#chart`, `#network`, `#ephemeris`,
 `index.html?direct#network`.
 
 ## Screens
+
+| | |
+|---|---|
+| ![Market Ladder](screenshots/markets.jpg) | ![Candle Range](screenshots/chart.jpg) |
+| **Market Ladder** — top twelve, one screen | **Candle Range** — 70 daily candles + window cards |
+| ![Chain Telemetry](screenshots/network.jpg) | ![Market Ephemeris](screenshots/ephemeris.jpg) |
+| **Chain Telemetry** — blocks, fees, gas, funding | **Market Ephemeris** — fear & greed, dominance, moon |
 
 **1 · Conditions** — BTC price, the market's "weather" derived from 24h change
 (a fixed ladder, not a model), 24h range, dominance, volume, fear & greed, gas,
